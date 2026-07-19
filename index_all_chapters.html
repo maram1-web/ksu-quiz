@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KSU 101</title>
+<style>
+:root{
+  --blue:#1268d8;--navy:#0d4f7d;--bg:#f2f7fb;--card:#fff;--text:#11243a;
+  --muted:#6e8297;--line:#dbe5ef;--green:#28a34a;--red:#dc4a5d;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font-family:inherit}
+header{
+  min-height:148px;background:linear-gradient(110deg,#155b90,#1268d8);
+  color:#fff;padding:24px 4vw;display:flex;align-items:flex-start;justify-content:space-between
+}
+.brand h1{margin:0;font-size:52px;line-height:1;font-weight:900}
+.brand p{margin:16px 0 0;font-size:22px}
+.header-btn{border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;border-radius:14px;padding:12px 18px;cursor:pointer}
+.container{max-width:1180px;margin:0 auto;padding:0 26px}
+.home-title{font-size:34px;margin:14px 0 28px;font-weight:900}
+.chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.chapter-card{
+  --accent:#1268d8;background:#fff;border:1px solid var(--line);border-right:10px solid var(--accent);
+  border-radius:28px;padding:28px 26px;box-shadow:0 10px 26px rgba(32,72,110,.07);
+  cursor:pointer;transition:.18s;min-height:244px
+}
+.chapter-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(32,72,110,.12)}
+.chapter-card.selected{outline:4px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.card-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.card-kicker{font-size:20px;color:var(--accent);font-weight:900}
+.card-title{font-size:30px;margin:22px 0 34px;font-weight:900}
+.count-pill{background:#edf5ff;color:#065fc7;border-radius:999px;padding:13px 18px;font-size:18px;font-weight:900;white-space:nowrap}
+.progress{height:14px;background:#e8eef4;border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;width:var(--progress,0%);background:var(--accent)}
+.card-stats{display:flex;justify-content:space-between;color:#6d8298;font-size:19px;margin:18px 0 24px}
+.start-card-btn{width:100%;border:0;border-radius:16px;background:var(--accent);color:#fff;padding:17px;font-size:22px;font-weight:900;cursor:pointer}
+.controls{background:#fff;border:1px solid var(--line);border-radius:24px;margin:30px 0;padding:22px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.field label{display:block;font-size:17px;font-weight:900;margin-bottom:9px}
+.field input,.field select{width:100%;height:54px;border:1px solid #cbd9e7;border-radius:13px;padding:0 14px;font-size:18px;background:#fff}
+.exam{display:none;max-width:1050px;margin:-32px auto 40px;padding:0 22px}
+.exam-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 8px 24px rgba(40,70,100,.06)}
+.exam-meta{display:flex;justify-content:space-between;color:#0962cf;font-weight:900;font-size:17px}
+.question{font-size:31px;line-height:1.6;font-weight:900;margin:28px 0}
+.option{display:flex;align-items:flex-start;gap:14px;border:1px solid #cad9e7;border-radius:18px;padding:19px;margin:12px 0;cursor:pointer;background:#fff}
+.option:hover{border-color:#80b8f4}
+.letter{width:46px;height:46px;min-width:46px;border-radius:50%;display:grid;place-items:center;background:#edf3f8;color:#4d6982;font-size:21px;font-weight:900}
+.option-text{font-size:21px;line-height:1.7;flex:1}
+.option.selected{border-color:#4f9df2;background:#f5faff}
+.option.correct{background:#dff4e4;border-color:#69c17d}
+.option.wrong{background:#fde4e8;border-color:#e67887}
+.feedback{margin-top:14px;font-size:18px;line-height:1.8;font-weight:700}
+.feedback strong{display:block;margin-bottom:4px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+.nav button{border-radius:13px;padding:14px 24px;font-size:18px;font-weight:900;cursor:pointer}
+.primary{border:0;background:#1268d8;color:#fff}
+.secondary{border:1px solid #92bdeb;background:#fff;color:#0962cf}
+.results{display:none;max-width:760px;margin:-30px auto 40px;padding:0 22px}
+.results-card{background:#fff;border-radius:24px;border:1px solid var(--line);padding:34px;text-align:center}
+.score-big{font-size:64px;color:#1268d8;font-weight:900}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
+.result-box{background:#f4f8fc;border-radius:16px;padding:18px}
+.hidden{display:none!important}
+footer{text-align:center;color:#73869a;padding:28px}
+@media(max-width:800px){
+  header{min-height:120px}.brand h1{font-size:40px}.brand p{font-size:18px}
+  .chapter-grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}
+  .card-title{font-size:26px}.question{font-size:25px}.exam-card{padding:20px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>KSU 101</h1><p>بنك الأسئلة المعرفي</p></div>
+  <button class="header-btn" onclick="goHome()">الصفحة الرئيسية</button>
+</header>
+
+<section id="home">
+  <div class="container">
+    <h2 class="home-title">اختر الباب</h2>
+    <div class="chapter-grid" id="chapterGrid"></div>
+
+    <div class="controls">
+      <div class="field"><label>الاسم (إجباري)</label><input id="candidateName" placeholder="اكتب اسمك"></div>
+      <div class="field"><label>عدد الأسئلة</label>
+        <select id="questionCount"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option><option value="all">الكل</option></select>
+      </div>
+      <div class="field"><label>ترتيب الأسئلة</label>
+        <select id="questionOrder"><option value="random">عشوائي</option><option value="normal">حسب الترتيب</option></select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="exam" id="exam">
+  <div class="exam-card">
+    <div class="exam-meta"><span id="qCounter"></span><span id="qPage"></span></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="nav">
+      <button class="secondary" id="prevBtn" onclick="prevQ()">السابق</button>
+      <button class="primary" id="nextBtn" onclick="nextQ()">التالي</button>
+    </div>
+  </div>
+</section>
+
+<section class="results" id="results">
+  <div class="results-card">
+    <h2>نتيجة الاختبار</h2>
+    <div class="score-big" id="finalPercent">0%</div>
+    <div class="result-grid">
+      <div class="result-box">الصحيح<br><strong id="correctCount">0</strong></div>
+      <div class="result-box">الخطأ<br><strong id="wrongCount">0</strong></div>
+      <div class="result-box">الأسئلة<br><strong id="totalCount">0</strong></div>
+    </div>
+    <button class="primary" style="padding:15px 30px;border-radius:14px" onclick="goHome()">العودة للرئيسية</button>
+  </div>
+</section>
+<footer>KSU 101 Quiz</footer>
+
+<script>
+const questions=[{"chapter": 1, "page": 8, "score": 3, "q": "أي العبارات الآتية تصف جامعة الملك سعود وفق النظام الأساسي؟", "options": ["مؤسسة أكاديمية مستقلة غير هادفة للربح.", "شركة تعليمية ربحية تابعة لوزارة التعليم.", "هيئة حكومية لا تتمتع باستقلال مالي.", "مؤسسة أهلية خاصة."], "answer": 0, "explanation": "ينص النظام على أن جامعة الملك سعود مؤسسة أكاديمية مستقلة غير هادفة للربح."}, {"chapter": 1, "page": 8, "score": 3, "q": "ما المقصود بلفظ «الهيئة» أينما ورد في النظام الأساسي للجامعة؟", "options": ["هيئة تقويم التعليم والتدريب.", "الهيئة الملكية لمدينة الرياض.", "هيئة السوق المالية.", "مجلس شؤون الجامعات."], "answer": 1, "explanation": "المقصود بالهيئة هو الهيئة الملكية لمدينة الرياض."}, {"chapter": 1, "page": 8, "score": 3, "q": "ما المقصود بلفظ «المجلس» في النظام الأساسي للجامعة؟", "options": ["مجلس شؤون الجامعات.", "مجلس الأمناء.", "مجلس إدارة الجامعة.", "المجلس العلمي."], "answer": 2, "explanation": "المجلس هو مجلس إدارة الجامعة."}, {"chapter": 1, "page": 8, "score": 3, "q": "أي مما يلي يدخل ضمن استقلال الجامعة وفق النظام؟", "options": ["الاستقلال الأكاديمي فقط.", "الاستقلال المالي والإداري والأكاديمي.", "الاستقلال الإداري فقط.", "الاستقلال المالي فقط."], "answer": 1, "explanation": "تتمتع الجامعة بالشخصية الاعتبارية والذمة المالية المستقلة، وبالاستقلال المالي والإداري والأكاديمي."}, {"chapter": 1, "page": 8, "score": 3, "q": "أين يقع المقر الرئيس لجامعة الملك سعود؟", "options": ["مدينة الرياض.", "مدينة جدة.", "مدينة الدرعية.", "مدينة الدمام."], "answer": 0, "explanation": "مقر الجامعة الرئيس في مدينة الرياض."}, {"chapter": 1, "page": 8, "score": 3, "q": "أي العبارات الآتية غير صحيحة بشأن الجامعة؟", "options": ["يجوز لها إنشاء فروع بحسب الحاجة.", "يجوز لها إنشاء كليات ومعاهد وأقسام.", "يجوز لها إنشاء مراكز أبحاث وبرامج خارج مقرها الرئيس.", "لا يجوز لها إنشاء أي فرع خارج مقرها الرئيس."], "answer": 3, "explanation": "يجوز للجامعة إنشاء فروع وكليات ومعاهد وأقسام ومراكز أبحاث وبرامج خارج مقرها الرئيس بحسب الحاجة."}, {"chapter": 1, "page": 9, "score": 3, "q": "من الجهة التي تعتمد رؤى الجامعة وخططها الاستراتيجية وتقاريرها السنوية؟", "options": ["مجلس إدارة الهيئة.", "رئيس الجامعة منفردًا.", "وزارة التعليم.", "المجلس العلمي."], "answer": 0, "explanation": "يتولى مجلس إدارة الهيئة اعتماد رؤى الجامعة وخططها الاستراتيجية وتقاريرها السنوية."}, {"chapter": 1, "page": 9, "score": 3, "q": "أي مما يلي يعد من اختصاصات مجلس إدارة الهيئة؟", "options": ["إقرار الجدول الدراسي اليومي للكليات.", "اعتماد سياسات الاستثمار وإجراءاته.", "تسجيل الطلاب في المقررات.", "تعيين رؤساء الأقسام مباشرة."], "answer": 1, "explanation": "من اختصاصاته اعتماد استراتيجية الجامعة للاستثمار وسياساته وإجراءاته."}, {"chapter": 1, "page": 9, "score": 3, "q": "من الذي يعيّن رئيس الجامعة وفق النظام؟", "options": ["مجلس إدارة الجامعة مباشرة دون ترشيح.", "مجلس إدارة الهيئة بناءً على ترشيح من المجلس.", "وزير التعليم.", "المجلس العلمي."], "answer": 1, "explanation": "يعيّن مجلس إدارة الهيئة رئيس الجامعة بناءً على ترشيح من مجلس إدارة الجامعة."}, {"chapter": 1, "page": 9, "score": 3, "q": "أي سياسة يعتمدها مجلس إدارة الهيئة وفق المادة الثالثة؟", "options": ["سياسة الإجازات الطلابية.", "سياسة الإفصاح وتعارض المصالح.", "سياسة الجداول الدراسية.", "سياسة القبول لكل كلية."], "answer": 1, "explanation": "يعتمد مجلس إدارة الهيئة سياسة الإفصاح وتعارض المصالح في الجامعة."}, {"chapter": 1, "page": 10, "score": 3, "q": "يتمتع أعضاء هيئة التدريس في الجامعة بـ:", "options": ["حرية إدارية مطلقة دون لوائح.", "الحريات والحقوق الأكاديمية والبحثية المتصلة بالبحث العلمي.", "حصانة من جميع الأنظمة الوطنية.", "الحق في اعتماد الميزانية."], "answer": 1, "explanation": "يتمتع أعضاء هيئة التدريس بالحريات والحقوق الأكاديمية والبحثية المتصلة بالبحث العلمي وتطويره."}, {"chapter": 1, "page": 10, "score": 3, "q": "أي مما يلي تمنحه الجامعة وفق ما يقره المجلس؟", "options": ["درجات التعليم العالي والزمالة وما بعد الدكتوراه والشهادات الفخرية.", "رخص قيادة مهنية.", "اعتمادات تجارية للشركات.", "تراخيص مزاولة جميع المهن."], "answer": 0, "explanation": "للجامعة منح درجات التعليم العالي والزمالة وما بعد الدكتوراه وبرامج التعليم المستمر والتعليم عن بعد والمدمج والشهادات الفخرية."}, {"chapter": 1, "page": 10, "score": 3, "q": "بماذا تلتزم الجامعة في مجال الاعتماد الأكاديمي؟", "options": ["بمعايير داخلية فقط.", "بأفضل المعايير والممارسات لدى الجهات الوطنية والدولية المختصة.", "بمعايير وزارة المالية فقط.", "بمعايير يضعها كل قسم منفردًا."], "answer": 1, "explanation": "تلتزم الجامعة بتحقيق معايير الاعتماد الأكاديمي وفق أفضل المعايير الوطنية والدولية."}, {"chapter": 1, "page": 11, "score": 3, "q": "أي مما يلي يُعد هدفًا للجامعة وفق المادة الخامسة؟", "options": ["خدمة التعليم العالي في الرياض خاصة والمملكة عامة.", "التركيز على التدريب المهني فقط.", "العمل داخل مدينة الرياض دون امتداد وطني.", "إلغاء البحث العلمي التطبيقي."], "answer": 0, "explanation": "من أهداف الجامعة خدمة التعليم العالي في مدينة الرياض بشكل خاص، وفي المملكة بشكل عام."}, {"chapter": 1, "page": 11, "score": 3, "q": "تسعى الجامعة إلى أن تكون مؤسسة رائدة في التعليم الجامعي على أي مستوى؟", "options": ["محلي فقط.", "إقليمي وعالمي.", "خليجي فقط.", "داخلي على مستوى المدينة فقط."], "answer": 1, "explanation": "تهدف الجامعة إلى أن تكون مؤسسة رائدة إقليميًا وعالميًا في مجال التعليم الجامعي."}, {"chapter": 1, "page": 11, "score": 3, "q": "أي مما يلي من صلاحيات الجامعة لتحقيق أهدافها؟", "options": ["تملك الأصول والتصرف بها واستثمارها داخل المملكة وخارجها.", "إصدار أنظمة وطنية ملزمة لجميع الجامعات.", "تحديد السياسة النقدية للدولة.", "اعتماد ميزانيات الجهات الحكومية الأخرى."], "answer": 0, "explanation": "للجامعة تملك الأصول والتصرف بها واستثمارها، بما يشمل أنواعًا متعددة من الأصول داخل المملكة وخارجها."}, {"chapter": 1, "page": 11, "score": 3, "q": "أي عبارة تصف صلاحية الجامعة في مجال الاتفاقيات؟", "options": ["لا يجوز لها إبرام مذكرات تفاهم.", "يجوز لها إبرام الاتفاقيات ومذكرات التفاهم والتعاون والبروتوكولات والعقود.", "يقتصر تعاونها على الجهات المحلية.", "لا يجوز لها التعاون مع هيئات الاعتماد الدولية."], "answer": 1, "explanation": "للجامعة إبرام الاتفاقيات ومذكرات التفاهم والتعاون والبروتوكولات والعقود وتبادل الخبرات محليًا وإقليميًا ودوليًا."}, {"chapter": 1, "page": 12, "score": 3, "q": "كم يبلغ الحد الأدنى لعدد أعضاء مجلس إدارة الجامعة من غير رئيس الجامعة؟", "options": ["10 أعضاء.", "12 عضوًا.", "14 عضوًا.", "16 عضوًا."], "answer": 2, "explanation": "يشكل المجلس من عدد لا يقل عن أربعة عشر عضوًا، يكون بينهم رئيس للمجلس ونائب له، إضافة إلى رئيس الجامعة عضوًا."}, {"chapter": 1, "page": 12, "score": 3, "q": "ما مدة العضوية في مجلس إدارة الجامعة، فيما عدا رئيس الجامعة؟", "options": ["سنة واحدة قابلة للتجديد.", "سنتان غير قابلة للتجديد.", "ثلاث سنوات قابلة للتجديد مرتين.", "أربع سنوات قابلة للتجديد مرة واحدة."], "answer": 2, "explanation": "مدة العضوية ثلاث سنوات قابلة للتجديد مرتين."}, {"chapter": 1, "page": 12, "score": 3, "q": "من السلطة المهيمنة على إدارة شؤون الجامعة واتخاذ القرارات اللازمة لتحقيق أغراضها؟", "options": ["مجلس إدارة الجامعة.", "المجلس العلمي.", "عمادة القبول والتسجيل.", "وزارة التعليم."], "answer": 0, "explanation": "مجلس إدارة الجامعة هو السلطة المهيمنة على إدارة شؤونها."}, {"chapter": 1, "page": 12, "score": 3, "q": "من يقر الهيكل التنظيمي للجامعة؟", "options": ["مجلس إدارة الجامعة بناءً على اقتراح رئيس الجامعة.", "رئيس الجامعة منفردًا.", "مجلس إدارة الهيئة دون اقتراح.", "المجلس العلمي."], "answer": 0, "explanation": "يقر مجلس إدارة الجامعة الهيكل التنظيمي بناءً على اقتراح من رئيس الجامعة."}, {"chapter": 1, "page": 12, "score": 3, "q": "أي منصب يرشحه مجلس إدارة الجامعة؟", "options": ["أمين المجلس.", "رئيس الجامعة.", "رئيس كل قسم أكاديمي.", "مراقب الحسابات الخارجي."], "answer": 1, "explanation": "من اختصاص المجلس ترشيح رئيس الجامعة."}, {"chapter": 1, "page": 13, "score": 3, "q": "الموافقة على إنشاء الفروع والكليات والمعاهد والأقسام ومراكز الأبحاث والبرامج تكون بناءً على توصية من:", "options": ["رئيس الجامعة.", "المجلس العلمي.", "وزارة التعليم.", "عمداء الكليات مجتمعين."], "answer": 0, "explanation": "تكون الموافقة بناءً على توصية من رئيس الجامعة."}, {"chapter": 1, "page": 13, "score": 3, "q": "من يحدد الرسوم الدراسية والمقابل المالي للخدمات والأعمال التي يرى تحصيلها؟", "options": ["مجلس إدارة الجامعة.", "مجلس إدارة الهيئة فقط.", "رئيس الجامعة منفردًا.", "عمادة شؤون الطلاب."], "answer": 0, "explanation": "يختص مجلس إدارة الجامعة بتحديد الرسوم الدراسية والمقابل المالي للخدمات والأعمال."}, {"chapter": 1, "page": 13, "score": 3, "q": "من يوافق على التقويم الدراسي لكل سنة وموعد مراسم التخرج؟", "options": ["مجلس إدارة الجامعة.", "مجلس إدارة الهيئة.", "عمادة القبول والتسجيل وحدها.", "المجلس العلمي."], "answer": 0, "explanation": "من اختصاص مجلس إدارة الجامعة الموافقة على التقويم الدراسي وموعد مراسم التخرج."}, {"chapter": 1, "page": 14, "score": 3, "q": "من يحدد بداية السنة المالية ونهايتها؟", "options": ["رئيس الجامعة.", "مجلس إدارة الجامعة.", "وزارة المالية.", "المراقب المالي الداخلي."], "answer": 1, "explanation": "يختص مجلس إدارة الجامعة بتحديد بداية السنة المالية ونهايتها."}, {"chapter": 1, "page": 14, "score": 3, "q": "من يعيّن المراقب المالي الداخلي؟", "options": ["مجلس إدارة الجامعة.", "مجلس إدارة الهيئة.", "رئيس الجامعة منفردًا.", "المراجع الخارجي."], "answer": 0, "explanation": "يتولى مجلس إدارة الجامعة تعيين مراقب مالي داخلي."}, {"chapter": 1, "page": 15, "score": 3, "q": "كم مرة يجتمع مجلس إدارة الجامعة كحد أدنى؟", "options": ["مرة كل شهر.", "مرة كل شهرين.", "مرة كل ثلاثة أشهر.", "مرتين في السنة."], "answer": 1, "explanation": "يجتمع المجلس بدعوة من رئيسه مرة كل شهرين على الأقل."}, {"chapter": 1, "page": 15, "score": 3, "q": "قبل الاجتماع بكم يوم على الأقل يجب توجيه الدعوة كتابة؟", "options": ["3 أيام.", "5 أيام.", "7 أيام.", "10 أيام."], "answer": 2, "explanation": "يجب توجيه الدعوة كتابة قبل الاجتماع بسبعة أيام على الأقل، متضمنة جدول الأعمال."}, {"chapter": 1, "page": 15, "score": 3, "q": "عند تساوي الأصوات في مجلس الإدارة، ما الإجراء الصحيح؟", "options": ["يؤجل القرار تلقائيًا.", "يرجح الجانب الذي يصوت معه رئيس الاجتماع.", "يُعاد التصويت في اجتماع لاحق فقط.", "يُحال القرار إلى المجلس العلمي."], "answer": 1, "explanation": "عند تساوي الأصوات يرجح الجانب الذي يصوت معه رئيس الاجتماع."}, {"chapter": 2, "page": 24, "score": 3, "q": "من كان أول مدير ومؤسس لجامعة الملك سعود؟", "options": ["الدكتور عبد الوهاب بن محمد عزام.", "الدكتور غازي القصيبي.", "الدكتور بدران العمر.", "الدكتور عبدالله العثمان."], "answer": 0, "explanation": "اختير الدكتور عبد الوهاب بن محمد عزام أول مدير ومؤسس للجامعة عام 1377هـ."}, {"chapter": 2, "page": 24, "score": 3, "q": "في أي عام تأسست جامعة الملك سعود؟", "options": ["1375هـ.", "1376هـ.", "1377هـ.", "1380هـ."], "answer": 2, "explanation": "تأسست الجامعة عام 1377هـ الموافق 1957م."}, {"chapter": 2, "page": 24, "score": 3, "q": "ما الكليتان اللتان شكلتا النواة الأولى للجامعة؟", "options": ["الطب والهندسة.", "الآداب والعلوم.", "الزراعة والتربية.", "إدارة الأعمال والحقوق."], "answer": 1, "explanation": "صدر مرسومان بإنشاء كليتي الآداب والعلوم لتكونا النواة الأولى للجامعة."}, {"chapter": 2, "page": 28, "score": 3, "q": "في أي عام افتتحت كلية الزراعة؟", "options": ["1383هـ.", "1384هـ.", "1385هـ.", "1387هـ."], "answer": 2, "explanation": "افتتحت كلية الزراعة عام 1385هـ."}, {"chapter": 2, "page": 28, "score": 3, "q": "متى بدأت الدراسة الفعلية في كلية الطب؟", "options": ["1387هـ.", "1388هـ.", "1389هـ.", "1394هـ."], "answer": 2, "explanation": "بدأت الدراسة الفعلية في كلية الطب عام 1389هـ."}, {"chapter": 2, "page": 28, "score": 3, "q": "متى بدأ قبول الطالبات في كلية الطب؟", "options": ["1389هـ.", "1390هـ.", "1392هـ.", "1394هـ."], "answer": 3, "explanation": "بدأ قبول الطالبات في كلية الطب عام 1394هـ."}, {"chapter": 2, "page": 28, "score": 3, "q": "أي منظمة تعاونت في إنشاء كليتي الهندسة والتربية قبل ضمهما للجامعة؟", "options": ["اليونسكو.", "منظمة الصحة العالمية.", "الأمم المتحدة الإنمائي.", "البنك الدولي."], "answer": 0, "explanation": "كانت الكليتان تحت إشراف وزارة المعارف بالتعاون مع منظمة اليونسكو."}, {"chapter": 2, "page": 24, "score": 3, "q": "متى توفي المدير المؤسس الدكتور عبد الوهاب عزام؟", "options": ["1377هـ.", "1378هـ.", "1380هـ.", "1382هـ."], "answer": 1, "explanation": "توفي عام 1378هـ."}, {"chapter": 2, "page": 24, "score": 3, "q": "أي عبارة صحيحة عن إنشاء الكليات في الجامعة؟", "options": ["تنشأ دفعة واحدة.", "تنشأ تباعًا على قدر الحاجة والاستعداد.", "لا تنشأ إلا بأمر من وزارة التعليم.", "تقتصر على مدينة الرياض."], "answer": 1, "explanation": "نصت المادة الثالثة على أن الكليات تنشأ تباعًا على قدر الحاجة والاستعداد."}, {"chapter": 2, "page": 28, "score": 3, "q": "أي تخصص كان من أقسام كلية الزراعة؟", "options": ["هندسة البرمجيات.", "علوم الأغذية والتغذية.", "القانون العام.", "العلوم السياسية."], "answer": 1, "explanation": "تضم الكلية تخصصات منها علوم الأغذية والتغذية."}, {"chapter": 3, "page": 47, "score": 3, "q": "ما المجال الرئيس الذي يغطيه الباب الثالث؟", "options": ["التصنيفات الدولية.", "الهيكل الأكاديمي والتنظيمي.", "الشراكات الدولية.", "بيئة العمل."], "answer": 1, "explanation": "يتناول الباب الثالث الكليات والمعاهد والعمادات والهيكل الأكاديمي والتنظيمي."}, {"chapter": 3, "page": 52, "score": 3, "q": "كم قسمًا رئيسيًا تضم كلية الحقوق والعلوم السياسية؟", "options": ["قسمان.", "ثلاثة أقسام.", "أربعة أقسام.", "خمسة أقسام."], "answer": 1, "explanation": "تضم القانون الخاص والقانون العام والعلوم السياسية."}, {"chapter": 3, "page": 52, "score": 3, "q": "أي مما يلي ليس من الأقسام الرئيسة في كلية الحقوق والعلوم السياسية؟", "options": ["القانون الخاص.", "القانون العام.", "العلوم السياسية.", "الإدارة العامة."], "answer": 3, "explanation": "الأقسام الرئيسة هي القانون الخاص والقانون العام والعلوم السياسية."}, {"chapter": 3, "page": 48, "score": 3, "q": "أي درجة تمنحها كلية الحقوق والعلوم السياسية؟", "options": ["البكالوريوس في الحقوق والعلوم السياسية.", "الدبلوم فقط.", "الزمالة الطبية.", "الهندسة القانونية."], "answer": 0, "explanation": "تمنح درجة البكالوريوس في الحقوق والعلوم السياسية إضافة إلى برامج دراسات عليا."}, {"chapter": 3, "page": 51, "score": 3, "q": "متى تعود بدايات عمادة شؤون الطلاب؟", "options": ["1380هـ.", "1385/8/16هـ.", "1390هـ.", "1419هـ."], "answer": 1, "explanation": "تعود بداياتها إلى 16/8/1385هـ."}, {"chapter": 3, "page": 51, "score": 3, "q": "ما الهدف الرئيس لعمادة شؤون الطلاب؟", "options": ["إدارة الاستثمارات.", "توفير الرعاية والخدمات والأنشطة اللاصفية للطلاب والطالبات.", "إقرار اللوائح المالية.", "اعتماد الخطط الاستراتيجية."], "answer": 1, "explanation": "تهدف إلى توفير الرعاية والخدمات والأنشطة اللاصفية وتهيئة البيئة المناسبة."}, {"chapter": 3, "page": 51, "score": 3, "q": "متى أنشئت عمادة البحث العلمي؟", "options": ["1399هـ.", "1409هـ.", "1419هـ.", "1429هـ."], "answer": 2, "explanation": "أنشئت عمادة البحث العلمي عام 1419هـ."}, {"chapter": 3, "page": 51, "score": 3, "q": "أي جهة تشرف على مراكز البحوث المختلفة في الجامعة؟", "options": ["عمادة البحث العلمي.", "عمادة القبول والتسجيل.", "عمادة شؤون الطلاب.", "عمادة التعاملات الإلكترونية."], "answer": 0, "explanation": "عمادة البحث العلمي هي الجهة المعنية برعاية النشاط البحثي والإشراف على مراكز البحوث."}, {"chapter": 3, "page": 52, "score": 3, "q": "ما أحد أدوار كلية الحقوق والعلوم السياسية؟", "options": ["تأهيل الكوادر القانونية للقطاعين الحكومي والخاص.", "إدارة المستشفيات.", "إعداد المهندسين فقط.", "منح تراخيص مهنية."], "answer": 0, "explanation": "تسهم الكلية في تأهيل الكوادر القانونية للقطاعين الحكومي والخاص."}, {"chapter": 3, "page": 51, "score": 3, "q": "أي مما يلي يعد من مهام عمادة البحث العلمي؟", "options": ["تمويل المشاريع البحثية وتعزيز الشراكات العلمية.", "تسجيل الطلاب في المقررات.", "تحديد الرسوم الدراسية.", "إدارة السكن الطلابي فقط."], "answer": 0, "explanation": "من مهامها تمويل المشاريع البحثية وتعزيز الشراكات العلمية محليًا ودوليًا."}, {"chapter": 4, "page": 55, "score": 3, "q": "كم مركزًا بحثيًا متخصصًا أنشأت الجامعة بحسب المذكرة؟", "options": ["11 مركزًا.", "18 مركزًا.", "21 مركزًا.", "25 مركزًا."], "answer": 2, "explanation": "أنشأت الجامعة واحدًا وعشرين مركزًا بحثيًا متخصصًا."}, {"chapter": 4, "page": 55, "score": 3, "q": "كم مركزًا من المراكز البحثية تابع للكليات النسائية؟", "options": ["مركز واحد.", "مركزان.", "ثلاثة مراكز.", "أربعة مراكز."], "answer": 1, "explanation": "من بينها مركزان تابعان للكليات النسائية."}, {"chapter": 4, "page": 55, "score": 3, "q": "ما الجهة التي تخضع لها المراكز البحثية إداريًا؟", "options": ["عمادة البحث العلمي.", "عمادة القبول والتسجيل.", "عمادة شؤون الطلاب.", "المجلس العلمي فقط."], "answer": 0, "explanation": "تخضع إداريًا لعمادة البحث العلمي."}, {"chapter": 4, "page": 55, "score": 3, "q": "على ماذا يركز مركز تقنيات الطاقة المستدامة؟", "options": ["القانون الدولي.", "الطاقة المتجددة وكفاءة الطاقة.", "العلوم السياسية.", "التعليم الإلكتروني فقط."], "answer": 1, "explanation": "يركز على تقنيات الطاقة المتجددة وكفاءة الطاقة."}, {"chapter": 4, "page": 55, "score": 3, "q": "أي مجال ليس من مجالات أبحاث مركز تقنيات الطاقة المستدامة؟", "options": ["الطاقة الشمسية.", "طاقة الرياح.", "الطاقة الحرارية الأرضية.", "القانون التجاري."], "answer": 3, "explanation": "يركز على الطاقة الشمسية والرياح والطاقة الحرارية الأرضية."}, {"chapter": 4, "page": 56, "score": 3, "q": "ما مجال معهد الملك عبدالله لتقنية النانو؟", "options": ["تقنية النانو وتطبيقاتها.", "العلوم السياسية.", "الزراعة التقليدية.", "الأنظمة الإدارية."], "answer": 0, "explanation": "يختص بتقنية النانو وتطبيقاتها في الطب والإلكترونيات والطاقة والبيئة والمواد."}, {"chapter": 4, "page": 57, "score": 3, "q": "ما مدة الكرسي البحثي في الجامعة؟", "options": ["سنتان.", "ثلاث سنوات.", "أربع سنوات.", "خمس سنوات."], "answer": 2, "explanation": "تبلغ مدة الكرسي البحثي أربع سنوات ويجوز تمديدها."}, {"chapter": 4, "page": 57, "score": 3, "q": "ما الهدف الرئيس من برنامج الكراسي البحثية؟", "options": ["تحقيق التميز في البحث والتطوير واقتصاد المعرفة.", "زيادة الرسوم الدراسية.", "إدارة القبول.", "التوسع في الأنشطة الرياضية فقط."], "answer": 0, "explanation": "يهدف إلى تحقيق التميز في البحث والتطوير واقتصاد المعرفة."}, {"chapter": 4, "page": 55, "score": 3, "q": "ماذا توفر المراكز البحثية للباحثين؟", "options": ["بيئة علمية متخصصة وخدمات إدارية وفنية ومالية.", "خدمات سكنية فقط.", "برامج قبول طلابي فقط.", "خدمات نقل فقط."], "answer": 0, "explanation": "تجمع الباحثين وتوفر خدمات تسهل إجراء البحوث العلمية المتقدمة."}, {"chapter": 4, "page": 55, "score": 3, "q": "ما أحد أهداف مراكز التميز البحثي؟", "options": ["معالجة قضايا وتحديات محلية وإقليمية وعالمية.", "تقليل النشر العلمي.", "إلغاء التعاون متعدد التخصصات.", "حصر البحث في مجال واحد."], "answer": 0, "explanation": "تدعم مشروعات متعددة التخصصات لمعالجة قضايا وتحديات متنوعة."}, {"chapter": 5, "page": 65, "score": 3, "q": "أي مؤشر في تصنيف QS يقيس تأثير الأبحاث العلمية وجودتها؟", "options": ["سمعة التوظيف.", "نسبة الطلاب الدوليين.", "الاستشهادات البحثية لكل عضو هيئة تدريس.", "استدامة التوظيف."], "answer": 2, "explanation": "الاستشهادات البحثية لكل عضو هيئة تدريس تقيس تأثير الأبحاث وجودتها."}, {"chapter": 5, "page": 65, "score": 3, "q": "كم تبلغ نسبة وزن الاستشهادات البحثية لكل عضو هيئة تدريس في QS؟", "options": ["5%.", "10%.", "15%.", "20%."], "answer": 3, "explanation": "تبلغ 20%."}, {"chapter": 5, "page": 65, "score": 3, "q": "كم تبلغ نسبة سمعة التوظيف في QS؟", "options": ["5%.", "10%.", "15%.", "20%."], "answer": 2, "explanation": "تبلغ 15%."}, {"chapter": 5, "page": 65, "score": 3, "q": "ماذا تقيس نسبة أعضاء هيئة التدريس إلى الطلاب؟", "options": ["قوة الاستثمار.", "مدى توافر الدعم الأكاديمي للطلاب.", "عدد براءات الاختراع.", "جودة السكن."], "answer": 1, "explanation": "تقيس مدى توافر الدعم الأكاديمي للطلاب."}, {"chapter": 5, "page": 65, "score": 3, "q": "كم يبلغ وزن نسبة أعضاء هيئة التدريس إلى الطلاب في QS؟", "options": ["5%.", "10%.", "15%.", "20%."], "answer": 1, "explanation": "تبلغ 10%."}, {"chapter": 5, "page": 65, "score": 3, "q": "ماذا تعكس نسبة أعضاء هيئة التدريس الدوليين؟", "options": ["القدرة على استقطاب الكفاءات العالمية.", "حجم المباني.", "عدد البرامج المحلية فقط.", "التوظيف الحكومي."], "answer": 0, "explanation": "تعكس القدرة على استقطاب الكفاءات العالمية."}, {"chapter": 5, "page": 65, "score": 3, "q": "ماذا تقيس شبكة البحث الدولية؟", "options": ["التعاون البحثي الدولي.", "جودة السكن.", "الأنشطة الرياضية.", "عدد القاعات."], "answer": 0, "explanation": "تقيس مدى التعاون البحثي الدولي."}, {"chapter": 5, "page": 75, "score": 3, "q": "في أي تصنيف حافظت الجامعة على المرتبة الأولى محليًا بحسب المذكرة؟", "options": ["Webometrics.", "تصنيف مالي.", "تصنيف رياضي.", "تصنيف السكن."], "answer": 0, "explanation": "حافظت الجامعة على المرتبة الأولى محليًا في تصنيف Webometrics."}, {"chapter": 5, "page": 75, "score": 3, "q": "ماذا يقيس تصنيف Webometrics أساسًا؟", "options": ["الحضور الرقمي.", "الرسوم الدراسية.", "عدد الموظفين.", "التوسع العمراني."], "answer": 0, "explanation": "يقيس الحضور الرقمي للجامعة."}, {"chapter": 5, "page": 65, "score": 3, "q": "أي مؤشر يقيس نتائج الخريجين في سوق العمل؟", "options": ["مؤشرات التوظيف.", "نسبة الطلاب الدوليين.", "شبكة البحث الدولية.", "نسبة أعضاء هيئة التدريس."], "answer": 0, "explanation": "مؤشرات التوظيف تقيس نتائج الخريجين في سوق العمل."}, {"chapter": 6, "page": 75, "score": 3, "q": "ما الذي تعكسه إنجازات المدينة الطبية الجامعية؟", "options": ["التميز السريري والبحثي المتكامل.", "التميز الرياضي فقط.", "التوسع المالي فقط.", "الخدمات الإدارية فقط."], "answer": 0, "explanation": "تعكس التميز السريري والبحثي المتكامل وجودة الرعاية الصحية."}, {"chapter": 6, "page": 86, "score": 3, "q": "كم بلغت السعة السريرية للمدينة الطبية الجامعية في 2024؟", "options": ["800 سرير.", "1200 سرير.", "1800 سرير.", "2500 سرير."], "answer": 2, "explanation": "بلغت السعة السريرية 1800 سرير عبر مستشفيين جامعيين."}, {"chapter": 6, "page": 86, "score": 3, "q": "بماذا دخل مستشفى طب الأسنان الجامعي موسوعة غينيس؟", "options": ["أكبر مستشفى جامعي لطب الأسنان في العالم.", "أقدم مستشفى في المملكة.", "أكثر مستشفى من حيث الأطباء.", "أكبر مكتبة طبية."], "answer": 0, "explanation": "دخل موسوعة غينيس كأكبر مستشفى جامعي لطب الأسنان في العالم."}, {"chapter": 6, "page": 86, "score": 3, "q": "أي جائزة طبية وردت ضمن جوائز 2024؟", "options": ["جائزة ديزي العالمية للتمريض المتميز.", "جائزة نوبل للسلام.", "جائزة البوكر.", "جائزة أفضل ملعب."], "answer": 0, "explanation": "وردت جائزة ديزي العالمية للتمريض المتميز."}, {"chapter": 6, "page": 75, "score": 3, "q": "ماذا يعكس تصنيف Webometrics للجامعة؟", "options": ["قوة البنية الرقمية وجودة المحتوى العلمي الإلكتروني.", "عدد المواقف.", "حجم الرواتب.", "عدد الرحلات."], "answer": 0, "explanation": "يعكس قوة البنية الرقمية وجودة المحتوى العلمي المنشور إلكترونيًا."}, {"chapter": 6, "page": 75, "score": 3, "q": "أي نوع من الجوائز حققته الجامعة؟", "options": ["جوائز وطنية ودولية في البحث والابتكار.", "جوائز رياضية فقط.", "جوائز مالية فقط.", "لا توجد جوائز."], "answer": 0, "explanation": "حققت جوائز وطنية ودولية في البحث والابتكار وأفضل الممارسات المؤسسية."}, {"chapter": 6, "page": 75, "score": 3, "q": "ما دلالة الجوائز والاعتمادات؟", "options": ["التزام الجامعة بمعايير الجودة العالمية.", "انخفاض جودة البرامج.", "تراجع النشاط البحثي.", "اقتصار الجامعة على التعليم التقليدي."], "answer": 0, "explanation": "تؤكد التزام الجامعة بمعايير الجودة العالمية."}, {"chapter": 6, "page": 75, "score": 3, "q": "أي مجال يدخل ضمن إنجازات الجامعة؟", "options": ["براءات الاختراع والإنجازات الطبية والبحثية.", "الخدمات البريدية فقط.", "النقل العام فقط.", "الأنشطة الترفيهية فقط."], "answer": 0, "explanation": "تشمل الإنجازات الجوائز وبراءات الاختراع والإنجازات البحثية والطبية."}, {"chapter": 6, "page": 86, "score": 3, "q": "أي مبادرة وردت ضمن جوائز المدينة الطبية؟", "options": ["أفضل مبادرة للمستشفيات الخضراء.", "أفضل مبادرة للطرق.", "أفضل مبادرة للشحن.", "أفضل مبادرة للرياضة."], "answer": 0, "explanation": "وردت جائزة أفضل مبادرة للمستشفيات الخضراء."}, {"chapter": 6, "page": 75, "score": 3, "q": "ما أثر الإنجازات الحديثة والتاريخية؟", "options": ["ترسيخ سمعة الجامعة العلمية والأكاديمية عالميًا.", "تقليل مكانة الجامعة.", "حصرها محليًا.", "إلغاء الشراكات."], "answer": 0, "explanation": "تسهم في ترسيخ مكانة الجامعة وسمعتها العلمية والأكاديمية."}, {"chapter": 7, "page": 106, "score": 3, "q": "كم يزيد عدد مذكرات التفاهم الفعالة للجامعة؟", "options": ["100.", "300.", "500.", "1000."], "answer": 2, "explanation": "تمتلك الجامعة أكثر من 500 مذكرة تفاهم فعالة."}, {"chapter": 7, "page": 106, "score": 3, "q": "في كم دولة تمتد شراكات الجامعة تقريبًا؟", "options": ["أكثر من 20 دولة.", "أكثر من 40 دولة.", "أكثر من 60 دولة.", "أكثر من 100 دولة."], "answer": 2, "explanation": "تمتد الشراكات إلى أكثر من 60 دولة."}, {"chapter": 7, "page": 106, "score": 3, "q": "مع كم جامعة دولية تتعاون الجامعة تقريبًا؟", "options": ["أكثر من 50.", "أكثر من 100.", "أكثر من 200.", "أكثر من 500."], "answer": 2, "explanation": "تتعاون مع أكثر من 200 جامعة دولية."}, {"chapter": 7, "page": 106, "score": 3, "q": "ما أول مرحلة في إبرام مذكرة التفاهم؟", "options": ["التوقيع.", "الدراسة الأولية.", "التنفيذ.", "المراجعة النهائية."], "answer": 1, "explanation": "تبدأ العملية بالدراسة الأولية لتقييم جدوى التعاون."}, {"chapter": 7, "page": 106, "score": 3, "q": "من يوقع مذكرة التفاهم؟", "options": ["رئيس الجامعة أو من يفوضه.", "عميد الكلية دائمًا.", "مدير الإدارة القانونية فقط.", "أي موظف."], "answer": 0, "explanation": "يوقعها رئيس الجامعة أو من يفوضه."}, {"chapter": 7, "page": 106, "score": 3, "q": "أي نوع ليس من أنواع مذكرات التفاهم المذكورة؟", "options": ["أكاديمية.", "بحثية.", "تدريبية.", "مرورية."], "answer": 3, "explanation": "الأنواع المذكورة أكاديمية وبحثية وتدريبية وخدمية."}, {"chapter": 7, "page": 107, "score": 3, "q": "ما صفة جامعة الملك سعود في اتحاد الجامعات العربية؟", "options": ["عضو مؤسس.", "عضو مراقب فقط.", "ليست عضوًا.", "عضو مؤقت."], "answer": 0, "explanation": "جامعة الملك سعود عضو مؤسس في اتحاد الجامعات العربية."}, {"chapter": 7, "page": 107, "score": 3, "q": "كم جامعة تقريبًا يضم الاتحاد الدولي للجامعات IAU؟", "options": ["أكثر من 100.", "أكثر من 300.", "أكثر من 600.", "أكثر من 1000."], "answer": 2, "explanation": "يضم أكثر من 600 جامعة من أنحاء العالم."}, {"chapter": 7, "page": 108, "score": 3, "q": "أي جهة اعتماد دولية تخص الهندسة والتقنية؟", "options": ["ABET.", "AACSB.", "EFMD.", "IAU."], "answer": 0, "explanation": "ABET هو مجلس اعتماد الهندسة والتقنية."}, {"chapter": 7, "page": 111, "score": 3, "q": "ما أحد آثار الشراكات الدولية؟", "options": ["زيادة الأبحاث المنشورة وتحسين التصنيف ونقل المعرفة.", "تقليل التعاون.", "خفض فرص التوظيف.", "إيقاف البرامج المشتركة."], "answer": 0, "explanation": "من آثارها زيادة النشر العلمي وتحسين التصنيف وتطوير البرامج ونقل المعرفة."}, {"chapter": 8, "page": 115, "score": 3, "q": "ما المقصود ببيئة العمل؟", "options": ["كل ما يحيط بالموظف من مكان وعلاقات وثقافة وسياسات وإجراءات.", "مكان المكتب فقط.", "الرواتب فقط.", "الأنظمة التقنية فقط."], "answer": 0, "explanation": "تشمل مكان العمل والعلاقات المهنية والثقافة التنظيمية والسياسات والإجراءات."}, {"chapter": 8, "page": 115, "score": 3, "q": "كم محورًا رئيسيًا لمكونات بيئة العمل وفق الدليل الإرشادي؟", "options": ["ثلاثة.", "أربعة.", "خمسة.", "ستة."], "answer": 2, "explanation": "تصنف في خمسة محاور رئيسية."}, {"chapter": 8, "page": 115, "score": 3, "q": "أي مما يلي من مكونات بيئة العمل الرئيسة؟", "options": ["البيئة المكتبية.", "البيئة التقنية.", "البيئة الصحية والآمنة.", "جميع ما سبق."], "answer": 3, "explanation": "تشمل المكتبية والتشاركية والتقنية والصحية والآمنة والخضراء."}, {"chapter": 8, "page": 116, "score": 3, "q": "ما الغرض من منطقة العمل التعاونية؟", "options": ["تعزيز العمل الجماعي ومشاركة المعرفة.", "منع التواصل.", "حفظ الوثائق فقط.", "إجراء المقابلات فقط."], "answer": 0, "explanation": "مخصصة لتعزيز العمل الجماعي ومشاركة المعرفة والتفاعل."}, {"chapter": 8, "page": 116, "score": 3, "q": "ما الغرض من منطقة عدم الإزعاج؟", "options": ["إنجاز المهام التي تتطلب الخصوصية والسرية.", "الأنشطة الرياضية.", "تخزين الأجهزة.", "استقبال الزوار فقط."], "answer": 0, "explanation": "مهيأة للمهام التي تتطلب الخصوصية والسرية."}, {"chapter": 8, "page": 119, "score": 3, "q": "أي سلوك مطلوب من الموظف؟", "options": ["أداء المهام بمسؤولية وكفاءة وفي الوقت المحدد.", "إفشاء أسرار الجهة.", "تجاهل أمن المعلومات.", "رفض التدريب."], "answer": 0, "explanation": "من السلوكيات المطلوبة أداء المهام بمسؤولية وكفاءة والالتزام بالوقت."}, {"chapter": 8, "page": 119, "score": 3, "q": "ما أحد فوائد الشفافية في بيئة العمل؟", "options": ["تعزيز الثقة والتعاون والحوار المفتوح.", "تقليل التواصل.", "زيادة الغموض.", "منع الموظفين من طرح آرائهم."], "answer": 0, "explanation": "الشفافية تزيد التواصل وتعزز الثقة والتعاون."}, {"chapter": 8, "page": 119, "score": 3, "q": "ما أثر بيئة العمل الإيجابية؟", "options": ["رفع الإنتاجية وتحسين الأداء وتقليل الدوران الوظيفي.", "خفض الانتماء.", "زيادة التسرب.", "تقليل رضا الموظفين."], "answer": 0, "explanation": "ترفع الإنتاجية وتحسن الأداء وتعزز الانتماء وتحد من الدوران والتسرب."}, {"chapter": 8, "page": 119, "score": 3, "q": "لماذا تعد سياسة أمن المعلومات مهمة؟", "options": ["لحماية معلومات الجهة وأسرارها المهنية.", "لزيادة إفشاء البيانات.", "لإلغاء الصلاحيات.", "لمنع التدريب."], "answer": 0, "explanation": "يلتزم الموظف بسياسة أمن المعلومات ويحافظ على أسرار الجهة."}, {"chapter": 8, "page": 115, "score": 3, "q": "كيف تسهم بيئة العمل في استقطاب الكفاءات؟", "options": ["عبر توفير بيئة داعمة للإبداع والأداء والانتماء.", "عبر زيادة الغموض.", "عبر تقليل فرص التطوير.", "عبر إلغاء العمل التشاركي."], "answer": 0, "explanation": "أصبحت بيئة العمل عنصرًا حاسمًا في استقطاب الكفاءات والمحافظة عليها."}];
+const chapterTitles={"1": "نظام الجامعة الأساس", "2": "تاريخ الجامعة", "3": "الهيكل الأكاديمي والتنظيمي", "4": "البحث العلمي والابتكار", "5": "التصنيفات الدولية والمحلية", "6": "المنجزات", "7": "الشراكات والاتفاقيات", "8": "بيئة العمل"};
+const chapterCounts={0:500,1:75,2:65,3:100,4:35,5:60,6:50,7:80,8:35};
+const colors={0:'#18243d',1:'#1268d8',2:'#2aa04b',3:'#8a39c0',4:'#ef8500',5:'#df3b67',6:'#1ba4a7',7:'#b8792b',8:'#713ac0'};
+const ord=['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن'];
+let activeChapter=1,pool=[],current=0,answers={},startedAt=0;
+
+function statsKey(c){return 'ksu-card-stats-'+c}
+function getStats(c){try{return JSON.parse(localStorage.getItem(statsKey(c))||'{"answered":0,"best":0}')}catch(e){return {answered:0,best:0}}}
+
+function buildCards(){
+  const grid=document.getElementById('chapterGrid');grid.innerHTML='';
+
+  const allStats=getStats(0), allTotal=chapterCounts[0], allProgress=Math.min(100,Math.round((allStats.answered/allTotal)*100));
+  const allCard=document.createElement('article');
+  allCard.className='chapter-card'+(activeChapter===0?' selected':'');
+  allCard.style.setProperty('--accent',colors[0]);
+  allCard.style.gridColumn='1/-1';
+  allCard.innerHTML=`<div class="card-top"><div><div class="card-kicker">جميع الأبواب</div><div class="card-title">اختبار شامل من جميع الأبواب</div></div><div class="count-pill">${allTotal} سؤالًا</div></div>
+    <div class="progress"><span style="--progress:${allProgress}%"></span></div>
+    <div class="card-stats"><span>الإنجاز: ${allProgress}%</span><span>أفضل نتيجة: ${allStats.best}%</span></div>
+    <button class="start-card-btn">ابدأ الاختبار الشامل</button>`;
+  allCard.onclick=()=>{activeChapter=0;buildCards();startExam()};
+  grid.appendChild(allCard);
+
+  for(let c=1;c<=8;c++){
+    const s=getStats(c), total=chapterCounts[c], progress=Math.min(100,Math.round((s.answered/total)*100));
+    const card=document.createElement('article');
+    card.className='chapter-card'+(activeChapter===c?' selected':'');
+    card.style.setProperty('--accent',colors[c]);
+    card.innerHTML=`<div class="card-top"><div><div class="card-kicker">الباب ${ord[c]}</div><div class="card-title">${chapterTitles[c]}</div></div><div class="count-pill">${total} سؤالًا</div></div>
+      <div class="progress"><span style="--progress:${progress}%"></span></div>
+      <div class="card-stats"><span>الإنجاز: ${progress}%</span><span>أفضل نتيجة: ${s.best}%</span></div>
+      <button class="start-card-btn">ابدأ</button>`;
+    card.onclick=()=>{activeChapter=c;buildCards();startExam()};
+    grid.appendChild(card);
+  }
+}
+
+function startExam(){
+  const name=document.getElementById('candidateName').value.trim();
+  if(!name){alert('اكتب الاسم أولًا.');document.getElementById('candidateName').focus();return}
+  localStorage.setItem('ksu101-candidate-name',name);
+
+  const val=document.getElementById('questionCount').value;
+  const requested=val==='all'
+    ? (activeChapter===0?questions.length:questions.filter(q=>q.chapter===activeChapter).length)
+    : Number(val);
+
+  if(activeChapter===0){
+    const groups={};
+    for(let c=1;c<=8;c++) groups[c]=questions.filter(q=>q.chapter===c);
+
+    if(document.getElementById('questionOrder').value==='random'){
+      for(let c=1;c<=8;c++){
+        const arr=[...groups[c]];
+        for(let i=arr.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [arr[i],arr[j]]=[arr[j],arr[i]];
+        }
+        groups[c]=arr;
+      }
+    }
+
+    pool=[];
+    let remaining=Math.min(requested,questions.length);
+    let round=0;
+    while(remaining>0){
+      let added=0;
+      for(let c=1;c<=8 && remaining>0;c++){
+        if(groups[c][round]){
+          pool.push(groups[c][round]);
+          remaining--;
+          added++;
+        }
+      }
+      if(added===0) break;
+      round++;
+    }
+
+    if(document.getElementById('questionOrder').value==='random'){
+      for(let i=pool.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [pool[i],pool[j]]=[pool[j],pool[i]];
+      }
+    }
+  }else{
+    pool=questions.filter(q=>q.chapter===activeChapter);
+    if(document.getElementById('questionOrder').value==='random'){
+      pool=[...pool];
+      for(let i=pool.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [pool[i],pool[j]]=[pool[j],pool[i]];
+      }
+    }
+    pool=pool.slice(0,Math.min(requested,pool.length));
+  }
+
+  current=0;answers={};startedAt=Date.now();
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('results').style.display='none';
+  document.getElementById('exam').style.display='block';
+  render();
+}
+
+function render(){
+  const q=pool[current], answer=answers[current];
+  document.getElementById('qCounter').textContent=`السؤال ${current+1} من ${pool.length}`;
+  document.getElementById('qPage').textContent=`📖 الصفحة ${q.page}`;
+  document.getElementById('question').textContent=q.q;
+  const box=document.getElementById('options');box.innerHTML='';
+  q.options.forEach((op,i)=>{
+    const el=document.createElement('div');el.className='option';
+    if(answer){
+      if(i===q.answer) el.classList.add('correct');
+      if(i===answer.selected && i!==q.answer) el.classList.add('wrong');
+    }
+    el.innerHTML=`<span class="letter">${'ABCD'[i]}</span><span class="option-text">${op}${answer&&i===q.answer?`<span class="feedback"><strong>✓ ${answer.correct?'إجابة صحيحة':'الإجابة الصحيحة'}</strong>${q.explanation}</span>`:''}</span>`;
+    el.onclick=()=>selectAnswer(i);box.appendChild(el);
+  });
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===pool.length-1?'إنهاء الاختبار':'التالي';
+}
+
+function selectAnswer(i){
+  if(answers[current]) return;
+  const q=pool[current];
+  answers[current]={selected:i,correct:i===q.answer};
+  render();
+}
+
+function nextQ(){
+  if(!answers[current]){alert('اختر إجابة أولًا.');return}
+  if(current<pool.length-1){current++;render()}else finishExam();
+}
+function prevQ(){if(current>0){current--;render()}}
+
+function finishExam(){
+  const correct=Object.values(answers).filter(a=>a.correct).length;
+  const total=pool.length, wrong=total-correct, pct=Math.round(correct/total*100);
+  const old=getStats(activeChapter);
+  localStorage.setItem(statsKey(activeChapter),JSON.stringify({answered:Math.min(chapterCounts[activeChapter],old.answered+total),best:Math.max(old.best,pct)}));
+  document.getElementById('exam').style.display='none';
+  document.getElementById('results').style.display='block';
+  document.getElementById('finalPercent').textContent=pct+'%';
+  document.getElementById('correctCount').textContent=correct;
+  document.getElementById('wrongCount').textContent=wrong;
+  document.getElementById('totalCount').textContent=total;
+}
+
+function goHome(){
+  document.getElementById('exam').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('home').classList.remove('hidden');
+  buildCards();
+}
+document.getElementById('candidateName').value=localStorage.getItem('ksu101-candidate-name')||'';
+buildCards();
+</script>
+</body>
+</html>
